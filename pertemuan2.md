@@ -39,55 +39,168 @@ let aktif = true;         // boolean (true/false)
 
 **2. Buat file `style.css`:**
 ```css
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background: #1a1a2e;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f5f5f5;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
+    align-items: center;
     padding: 20px;
 }
 
 .chat-container {
-    width: 400px;
-    background: #16213e;
-    border-radius: 10px;
-    padding: 20px;
+    width: 100%;
+    max-width: 450px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
-h1 {
-    color: white;
+.chat-header {
+    background: #2563eb;
+    padding: 20px;
     text-align: center;
 }
 
+.chat-header h1 {
+    color: white;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.chat-header p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+    margin-top: 4px;
+}
+
 #chat-area {
-    height: 300px;
-    background: #0f3460;
-    border-radius: 8px;
-    padding: 10px;
+    height: 400px;
+    padding: 16px;
     overflow-y: auto;
-    margin-bottom: 10px;
+    background: #fafafa;
+}
+
+.pesan {
+    padding: 12px 16px;
+    margin: 8px 0;
+    border-radius: 16px;
+    max-width: 80%;
+    animation: muncul 0.2s ease;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.pesan-user {
+    background: #2563eb;
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+}
+
+.pesan-bot {
+    background: #e5e7eb;
+    color: #1f2937;
+    border-bottom-left-radius: 4px;
+}
+
+.waktu {
+    font-size: 10px;
+    opacity: 0.6;
+    margin-top: 4px;
+}
+
+.typing {
+    color: #6b7280;
+    font-style: italic;
+    padding: 10px;
+    font-size: 14px;
 }
 
 .input-area {
     display: flex;
+    padding: 16px;
     gap: 10px;
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
 }
 
 #user-input {
     flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 24px;
+    font-size: 14px;
+    background: #ffffff;
+    color: #1f2937;
+    transition: border-color 0.2s ease;
+}
+
+#user-input::placeholder {
+    color: #9ca3af;
+}
+
+#user-input:focus {
+    outline: none;
+    border-color: #2563eb;
 }
 
 #send-btn {
-    padding: 10px 20px;
-    background: #e94560;
+    padding: 12px 24px;
+    background: #2563eb;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 24px;
     cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
 }
+
+#send-btn:hover {
+    background: #1d4ed8;
+}
+
+#send-btn:active {
+    background: #1e40af;
+}
+
+@keyframes muncul {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#chat-area::-webkit-scrollbar {
+    width: 6px;
+}
+
+#chat-area::-webkit-scrollbar-track {
+    background: #f3f4f6;
+}
+
+#chat-area::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+#chat-area::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
 ```
 
 **3. Buat file `script.js`:**
