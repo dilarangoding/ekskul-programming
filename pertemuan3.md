@@ -37,7 +37,7 @@ pesan.includes("Halo") // true
 
 Update `index.html`:
 ```html
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 
 <head>
