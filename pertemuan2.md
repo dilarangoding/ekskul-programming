@@ -204,3 +204,21 @@ body {
 ```
 
 **3. Buat file `script.js`:**
+
+```javascript
+let inputBox = document.getElementById("user-input");
+let sendButton = document.getElementById("send-btn");
+let chatArea = document.getElementById("chat-area");
+
+// Ketika tombol kirim ditekan
+sendButton.onclick = function() {
+    // 1. Ambil teks yang diketik di dalam input
+    let pesanUser = inputBox.value;
+    
+    // 2. Tampilkan teks tersebut di area chat
+    chatArea.innerHTML = "Kamu berkata: " + pesanUser;
+    
+    // 3. Kosongkan kembali kolom input agar siap diketik ulang
+    inputBox.value = "";
+};
+```

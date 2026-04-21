@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot Full Versi HTML Tunggal</title>
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f5f5f5;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.chat-container {
+    width: 100%;
+    max-width: 450px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.chat-header {
+    background: #2563eb;
+    padding: 20px;
+    text-align: center;
+}
+
+.chat-header h1 {
+    color: white;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.chat-header p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+#chat-area {
+    height: 400px;
+    padding: 16px;
+    overflow-y: auto;
+    background: #fafafa;
+}
+
+.pesan {
+    padding: 12px 16px;
+    margin: 8px 0;
+    border-radius: 16px;
+    max-width: 80%;
+    animation: muncul 0.2s ease;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.pesan-user {
+    background: #2563eb;
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+}
+
+.pesan-bot {
+    background: #e5e7eb;
+    color: #1f2937;
+    border-bottom-left-radius: 4px;
+}
+
+.input-area {
+    display: flex;
+    padding: 16px;
+    gap: 10px;
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+}
+
+#user-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 24px;
+    font-size: 14px;
+    background: #ffffff;
+    color: #1f2937;
+    transition: border-color 0.2s ease;
+}
+
+#user-input:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+#send-btn {
+    padding: 12px 24px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 24px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+#send-btn:hover {
+    background: #1d4ed8;
+}
+
+@keyframes muncul {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>ChatBot</h1>
+            <p>Tanya apa saja!</p>
+        </div>
+        <div id="chat-area"></div>
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Ketik pesan..." autofocus>
+            <button id="send-btn">Kirim</button>
+        </div>
+    </div>
+    <script>
+let inputBox = document.getElementById("user-input");
+let sendButton = document.getElementById("send-btn");
+let chatArea = document.getElementById("chat-area");
+
+// GANTI BAGIAN DI DALAM KUTIP INI DENGAN API KEY GOOGLE KAMU SENDIRI!
+const API_KEY = "MASUKKAN-API-KEY-KAMU-DISINI"; 
+
+sendButton.onclick = async function() {
+    let pesanUser = inputBox.value;
+    if (pesanUser === "") return;
+
+    chatArea.innerHTML += `
+        <div class="pesan pesan-user"><p>${pesanUser}</p></div>
+    `;
+    inputBox.value = "";
+
+    const endpointGemini = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
+    const dataKirim = { contents: [{ parts: [{ text: pesanUser }] }] };
+
+    try {
+        chatArea.innerHTML += `<div class="pesan pesan-bot" id="loading-bot"><p><em>Mengetik...</em></p></div>`;
+        let response = await fetch(endpointGemini, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(dataKirim)
+        });
+        let data = await response.json();
+        let jawabanBot = data.candidates[0].content.parts[0].text;
+        document.getElementById("loading-bot").remove();
+        chatArea.innerHTML += `<div class="pesan pesan-bot"><p>${jawabanBot}</p></div>`;
+        // Scroll ke bawah
+        chatArea.scrollTop = chatArea.scrollHeight;
+    } catch (error) {
+        if(document.getElementById("loading-bot")) document.getElementById("loading-bot").remove();
+        chatArea.innerHTML += `<div class="pesan pesan-bot"><p>Maaf, koneksi ke otak AI terputus. Cek internet atau API Key kamu.</p></div>`;
+    }
+};
+
+// Menerima input pakai tombol Enter
+inputBox.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        sendButton.click();
+    }
+});
+
+    </script>
+</body>
+</html>
