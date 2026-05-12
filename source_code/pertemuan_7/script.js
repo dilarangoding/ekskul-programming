@@ -2,8 +2,7 @@ let inputBox = document.getElementById("user-input");
 let sendButton = document.getElementById("send-btn");
 let chatArea = document.getElementById("chat-area");
 
-// GANTI BAGIAN DI DALAM KUTIP INI DENGAN API KEY GOOGLE KAMU SENDIRI!
-const API_KEY = "MASUKKAN-API-KEY-KAMU-DISINI"; 
+const API_KEY = ""; 
 
 sendButton.onclick = async function() {
     let pesanUser = inputBox.value;
@@ -14,29 +13,38 @@ sendButton.onclick = async function() {
     `;
     inputBox.value = "";
 
-    const endpointGemini = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
+    const endpointGemini = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=" + API_KEY;
     const dataKirim = { contents: [{ parts: [{ text: pesanUser }] }] };
 
     try {
         chatArea.innerHTML += `<div class="pesan pesan-bot" id="loading-bot"><p><em>Mengetik...</em></p></div>`;
+        
         let response = await fetch(endpointGemini, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(dataKirim)
         });
+
         let data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error?.message || "HTTP Error " + response.status);
+        }
+
         let jawabanBot = data.candidates[0].content.parts[0].text;
+        let formatHTML = marked.parse(jawabanBot);
+        
         document.getElementById("loading-bot").remove();
-        chatArea.innerHTML += `<div class="pesan pesan-bot"><p>${jawabanBot}</p></div>`;
-        // Scroll ke bawah
+        chatArea.innerHTML += `<div class="pesan pesan-bot">${formatHTML}</div>`;
         chatArea.scrollTop = chatArea.scrollHeight;
+
     } catch (error) {
         if(document.getElementById("loading-bot")) document.getElementById("loading-bot").remove();
-        chatArea.innerHTML += `<div class="pesan pesan-bot"><p>Maaf, koneksi ke otak AI terputus. Cek internet atau API Key kamu.</p></div>`;
+        chatArea.innerHTML += `<div class="pesan pesan-bot"><p>Error: ${error.message}</p></div>`;
+        console.error("Detail Error:", error);
     }
 };
 
-// Menerima input pakai tombol Enter
 inputBox.addEventListener("keypress", function(event) {
     if (event.key === "Enter") {
         event.preventDefault();
